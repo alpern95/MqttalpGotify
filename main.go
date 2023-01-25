@@ -4,7 +4,7 @@
 # Date creation : 25/01/2023
 #
 # Description : Gerer les messages de gotify pour activé l'alarme
-#             : Objectif de l'envoi de metric représentant les états de réplication
+#             : Objectif lire les messages avec titre Alarme et ON ou OFF
 #
 # Parametres  :  dans le fichier de configuration
 #             :  paramètres par defaut pour le projet
@@ -22,3 +22,24 @@
 */
 
 package main
+
+import (
+        "net/http"
+        //"net/url"
+        log "github.com/sirupsen/logrus"
+)
+
+
+func main() {
+    log.Info("Info : demarrage ")
+    /* http.PostForm("http://localhost:80/message?token=A9fTnaUlyZVyDO0",
+        url.Values{"message": {"Alarme ON"}, "title": {"Alarme"}})
+    */
+    resp, err := http.Get("http://localhost:80/message?token=CbcCqwh5RMQEsOR")
+
+    log.Info("Loglevel : ",resp) 
+    if err != nil {
+        log.Fatal(err)
+    }else {log.Info("Sortie texte  : ",resp) }
+
+}
