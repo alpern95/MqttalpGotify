@@ -24,22 +24,51 @@
 package main
 
 import (
-        "net/http"
-        //"net/url"
-        log "github.com/sirupsen/logrus"
+	"log"
+	"net/http"
+	"net/url"
+
+	"github.com/gotify/go-api-client/v2/auth"
+	"github.com/gotify/go-api-client/v2/client/message"
+	"github.com/gotify/go-api-client/v2/gotify"
+	"github.com/gotify/go-api-client/v2/models"
 )
 
+const (
+	gotifyURL        = "http://localhost:80"
+	applicationToken = "A9fTnaUlyZVyDO0"
+)
 
 func main() {
-    log.Info("Info : demarrage ")
-    /* http.PostForm("http://localhost:80/message?token=A9fTnaUlyZVyDO0",
-        url.Values{"message": {"Alarme ON"}, "title": {"Alarme"}})
-    */
-    resp, err := http.Get("http://localhost:80/message?token=CbcCqwh5RMQEsOR")
+	myURL, _ := url.Parse(gotifyURL)
 
-    log.Info("Loglevel : ",resp) 
-    if err != nil {
-        log.Fatal(err)
-    }else {log.Info("Sortie texte  : ",resp) }
+        // Get version de gotify
+	client := gotify.NewClient(myURL, &http.Client{})
+	versionResponse, err := client.Version.GetVersion(nil)
 
+	if err != nil {
+		log.Fatal("Could not request version ", err)
+		return
+	}
+	version := versionResponse.Payload
+	log.Println("Found version", *version)
+
+        // envoie d'un message
+	params := message.NewCreateMessageParams()
+	params.Body = &models.MessageExternal{
+		Title:    "Alarm",
+		Message:  "ON",
+		Priority: 5,
+	}
+	_, err = client.Message.CreateMessage(params, auth.TokenAuth(applicationToken))
+
+	if err != nil {
+		log.Fatalf("Could not send message %v", err)
+		return
+	}
+	log.Println("Message Sent!")
+
+        // lire les messages recue
+
+        // supprimer les messages lues
 }
