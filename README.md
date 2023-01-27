@@ -11,8 +11,8 @@ Surveille le topic mqtt porte
 Si la porte est ouverte et l'alarme armée, on positionne le topic mqtt alarme à 1.
 
 
-## Programe 2
+## Programme 2
 ![Second programme, ](mermaid-diagram-pg2.svg)
 
-On survelle les message reçu par Gotify, si un message "Alarm ON" est reçu, onposition le topic mqtt alarm armée à 1
+On survelle les message reçu par Gotify, si un message "Alarm ON" est reçu, on positionne le topic mqtt alarm armée à 1
 si un message "Alarm OFF" est reçu, onposition le topic mqtt alarm armée à 0
