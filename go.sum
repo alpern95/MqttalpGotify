@@ -32,6 +32,8 @@ github.com/go-openapi/swag v0.17.0/go.mod h1:AByQ+nYG6gQg71GINrmuDXCPWdL640yX49/
 github.com/go-openapi/validate v0.17.0 h1:pqoViQz3YLOGIhAmD0N4Lt6pa/3Gnj3ymKqQwq8iS6U=
 github.com/go-openapi/validate v0.17.0/go.mod h1:Uh4HdOzKt19xGIGm1qHf/ofbX1YQ4Y+MYsct2VUrAJ4=
 github.com/google/uuid v1.0.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/gotify/go-api-client v1.2.0 h1:EUV5boWLAFJIIZA4kzMq3yA4255/iwmf/TCxYM4yD34=
+github.com/gotify/go-api-client v1.2.0/go.mod h1:3X450V3T0IyHlErWGwajleOlHqC6uiq25r2VtN1H1FA=
 github.com/gotify/go-api-client/v2 v2.0.4 h1:0w8skCr8aLBDKaQDg31LKKHUGF7rt7zdRpR+6cqIAlE=
 github.com/gotify/go-api-client/v2 v2.0.4/go.mod h1:VKiah/UK20bXsr0JObE1eBVLW44zbBouzjuri9iwjFU=
 github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329 h1:2gxZ0XQIU/5z3Z3bUBu+FXuk2pFbkN6tcwi/pjyaDic=

@@ -24,14 +24,16 @@
 package main
 
 import (
+        "fmt"
 	"log"
 	"net/http"
 	"net/url"
 
-	"github.com/gotify/go-api-client/v2/auth"
-	"github.com/gotify/go-api-client/v2/client/message"
-	"github.com/gotify/go-api-client/v2/gotify"
-	"github.com/gotify/go-api-client/v2/models"
+        "github.com/gotify/go-api-client/v2"
+	//"github.com/gotify/go-api-client/v2/auth"
+	//"github.com/gotify/go-api-client/v2/client/message"
+	//"github.com/gotify/go-api-client/v2/gotify"
+	//"github.com/gotify/go-api-client/v2/models"
 )
 
 const (
@@ -69,6 +71,32 @@ func main() {
 	log.Println("Message Sent!")
 
         // lire les messages recue
+
+    //url := "http://localhost:80/message"
+    //req, _ := http.NewRequest("GET", gotifyURL, nil)
+    ////req.Header.Add("Authorization", "CbcCqwh5RMQEsOR")
+    //req.Header.Add("Authorization", "A9fTnaUlyZVyDO0")
+
+    //res, _ := http.DefaultClient.Do(req)
+
+    //defer res.Body.Close()
+    //log.Println("Message Received!: ",res)
+     ///////
+    client := gotifyapi.New(gotifyURL,applicationToken)
+
+    messages, _, err := client.GetMessages(nil)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    for _, msg := range messages {
+        fmt.Println("Message ID:", msg.Id)
+        fmt.Println("Message Title:", msg.Title)
+        fmt.Println("Message Text:", msg.Message)
+        fmt.Println("")
+    }
+    //fmt.Println(res)
 
         // supprimer les messages lues
 }
