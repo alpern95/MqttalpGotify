@@ -24,74 +24,64 @@
 package main
 
 import (
-        "fmt"
+        "reflect"
+        //"fmt"
 	//"log"
         log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 
 	//"github.com/gotify/go-api-client/v2/auth"
-	//"github.com/gotify/go-api-client/v2/client/message"
-	//"github.com/gotify/go-api-client/v2/gotify"
+	"github.com/gotify/go-api-client/v2/client/message"
+	"github.com/gotify/go-api-client/v2/gotify"
 	//"github.com/gotify/go-api-client/v2/models"
-	"github.com/gotify/client-go/v2"
+        "github.com/gotify/go-api-client/v2/auth"
 )
 
 const (
 	gotifyURL        = "http://localhost:80"
-	applicationToken = "A9fTnaUlyZVyDO0"
+	applicationToken = "CbcCqwh5RMQEsOR"  //applitoken A9fTnaUlyZVyDO0  clenttoken  CbcCqwh5RMQEsOR
 )
 
 func main() {
         log.Info("Début")
 	myURL, _ := url.Parse(gotifyURL)
 
-        // lire les messages reçus sur mon serveur gotify 
-	client := gotify.NewClient("http://localhost:8080", "A9fTnaUlyZVyDO0")
-	msgs, err := client.GetMessages(0, 100)
-	if err != nil {
-		log.Fatalf("failed to get messages: %v", err)
-	}
-	for _, msg := range msgs {
-		fmt.Println("Message:", msg.Message, "Priority:", msg.Priority, "Title:", msg.Title)
-	}
+        // lire les messages recue
+    client := gotify.NewClient(myURL, &http.Client{}) // ok 
+    log.Info("print client ",client)
+    log.Info("print typeof client ",reflect.TypeOf(client))
 
-        log.Info("print message ",resp)
+    params := message.NewGetAppMessagesParams() //Ajout App
+    params.ID = 1
+    log.Info("print params NewGetAppMessagesParams ",params)
+    log.Info("print typeof params ",reflect.TypeOf(params))
 
-    //faire getmessage.  func (*Client) GetMessages  
-    // func (a *Client) GetMessages(params *GetMessagesParams, authInfo runtime.ClientAuthInfoWriter) (*GetMessagesOK, error)
-    log.Info("print params Body ",params.Body)
-    //log.Info("print message ",Message.params)
-    //message := client.NewCreateMessageParams()
-    //resp := client.Messages.GetMessages()
-    //message := client.NewCreateMessageParams()  //
-    //versionResponse, err := client.Messages.GetAppMessagesParameters(nil) // essaie de creer les messages parameter avant
-    //	if err != nil {
-    //		log.Fatal("Could not request version ", err)
-    // 		return
-    //	}
+messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK mais 401 GetApps
+//versionResponse, err := client.Message.GetAppsMessages(params,auth.TokenAuth(applicationToken))
+if err != nil {
+    log.Fatalf("Could not get messages %v", err)
+    return
+}
+log.Info("print version en real message ",messagesResponse)
+log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
 
-    //version := versionResponse.Payload
-    //log.Println("Found version", *version)
-    //log.Info("print versionResponse ",versionResponse)
-//fmt.Println(res)
 
-////////////////////////////////////////////////
-        // envoie d'un message (testé marche)
-        //  à utiliser dans le cas de réception d'un message Alarme ON ou OFF
-        //params := message.NewCreateMessageParams()
-        //params.Body = &models.MessageExternal{
-        //        Title:    "Alarm",
-        //        Message:  "ON",
-        //        Priority: 5,
-        //}
-        //_, err := client.Message.CreateMessage(params, auth.TokenAuth(applicationToken))
+//log.Info("print message payload ",messagesResponse.Payload)
+//resp, err := client.Messages.(params, nil) //get_app_messages_responses
 
-        //if err != nil {
-        //        log.Fatalf("Could not send message %v", err)
-        //        return
-        //}
-        //log.Println("Message Sent!")
+//reader :=  client.CreateClientReader()
+//resp, err := client.CreateClientReader(params, nil)
+//if err != nil {
+//    log.Fatalf("Could not get messages %v", err)
+//    return
+//}
+//messages := resp.GetPayload()
+//for _, message := range messages {
+    // traitez chaque message ici
+//}
+
 
         // supprimer les messages lues
+        //envoie notification
 }
