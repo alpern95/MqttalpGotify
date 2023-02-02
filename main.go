@@ -34,9 +34,15 @@ import (
 	//"github.com/gotify/go-api-client/v2/auth"
 	"github.com/gotify/go-api-client/v2/client/message"
 	"github.com/gotify/go-api-client/v2/gotify"
-	//"github.com/gotify/go-api-client/v2/models"
+	"github.com/gotify/go-api-client/v2/models"
         "github.com/gotify/go-api-client/v2/auth"
 )
+
+type GetAppMessagesOK struct {
+	Payload *models.PagedMessages
+}
+
+var messagesResponse GetAppMessagesOK
 
 const (
 	gotifyURL        = "http://localhost:80"
@@ -66,22 +72,23 @@ if err != nil {
 log.Info("print version en real message ",messagesResponse)
 log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
 
+log.Info("messages payload ",messagesResponse.Payload)
 
-//log.Info("print message payload ",messagesResponse.Payload)
-//resp, err := client.Messages.(params, nil) //get_app_messages_responses
+// extraire les messages
+messages := messagesResponse.Payload
+log.Info("Les messages ",messages)
+log.Info("Les messages typeof ",reflect.TypeOf(messages))
 
-//reader :=  client.CreateClientReader()
-//resp, err := client.CreateClientReader(params, nil)
-//if err != nil {
-//    log.Fatalf("Could not get messages %v", err)
-//    return
-//}
-//messages := resp.GetPayload()
-//for _, message := range messages {
+log.Info("Les messages all ",messages.Messages)
+log.Info("Les messages all Typeof ",reflect.TypeOf(messages.Messages))
+mess := messages.Messages
+
+for _, Messages := range mess {
+    log.Info("Les messages individuellement ",Messages)
     // traitez chaque message ici
-//}
-
+}
 
         // supprimer les messages lues
         //envoie notification
+
 }
