@@ -71,7 +71,6 @@ if err != nil {
 }
 log.Info("print version en real message ",messagesResponse)
 log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
-
 log.Info("messages payload ",messagesResponse.Payload)
 
 // extraire les messages
@@ -81,11 +80,15 @@ log.Info("Les messages typeof ",reflect.TypeOf(messages))
 
 log.Info("Les messages all ",messages.Messages)
 log.Info("Les messages all Typeof ",reflect.TypeOf(messages.Messages))
-mess := messages.Messages
+// calcul Taille
+log.Info("print Calcul du message Paging Size ",len(messages.Messages))
 
+mess := messages.Messages
 for _, Messages := range mess {
-    log.Info("Les messages individuellement ",Messages)
     // traitez chaque message ici
+    log.Info("Message ApplicationID:  ",Messages.ApplicationID)
+    log.Info("Titre du message: ",Messages.Title)
+    log.Info("Message: ",Messages.Message)
 }
 
         // supprimer les messages lues
