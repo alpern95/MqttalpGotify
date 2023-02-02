@@ -4,9 +4,9 @@ This projetc is not ready to deploiement ![Home-Security-Project]
 
 Projet de sécurisation de domicile
 
-Ce projet utilse un esp32c3 pour le capteur de porte.
+Ce projet utilise un esp32c3 pour le capteur de porte.
 
-Le capteur de porte utile le topic (mqtt) Porte_ouverte pour avertir d'une intrusion.
+Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir d'une intrusion.
 
 ![LA stack des programmes, ](stack.png)
 
