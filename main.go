@@ -3,13 +3,13 @@
 # Auteur : Alain Pernelle pour Projet "Home-Security-Project"
 # Date creation : 25/01/2023
 #
-# Description : Gerer les messages de gotify pour activé l'alarme
+# Description : Gerer les messages de gotify pour activer ou désactiver l'alarme
 #             : Objectif lire les messages avec titre Alarme et ON ou OFF
 #
 # Parametres  :  dans le fichier de configuration
 #             :  paramètres par defaut pour le projet
 #
-#
+#             : Documentation API  https://pkg.go.dev/github.com/gotify/go-api-client/v2@v2.0.4#section-readme
 #             : Versions
 #             : ========
 # v0.0        : 25/01/2023
@@ -25,15 +25,16 @@ package main
 
 import (
         "fmt"
-	"log"
+	//"log"
+        log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 
-        "github.com/gotify/go-api-client/v2"
 	//"github.com/gotify/go-api-client/v2/auth"
 	//"github.com/gotify/go-api-client/v2/client/message"
 	//"github.com/gotify/go-api-client/v2/gotify"
 	//"github.com/gotify/go-api-client/v2/models"
+	"github.com/gotify/client-go/v2"
 )
 
 const (
@@ -42,61 +43,55 @@ const (
 )
 
 func main() {
+        log.Info("Début")
 	myURL, _ := url.Parse(gotifyURL)
 
-        // Get version de gotify
-	client := gotify.NewClient(myURL, &http.Client{})
-	versionResponse, err := client.Version.GetVersion(nil)
-
+        // lire les messages reçus sur mon serveur gotify 
+	client := gotify.NewClient("http://localhost:8080", "A9fTnaUlyZVyDO0")
+	msgs, err := client.GetMessages(0, 100)
 	if err != nil {
-		log.Fatal("Could not request version ", err)
-		return
+		log.Fatalf("failed to get messages: %v", err)
 	}
-	version := versionResponse.Payload
-	log.Println("Found version", *version)
-
-        // envoie d'un message
-	params := message.NewCreateMessageParams()
-	params.Body = &models.MessageExternal{
-		Title:    "Alarm",
-		Message:  "ON",
-		Priority: 5,
+	for _, msg := range msgs {
+		fmt.Println("Message:", msg.Message, "Priority:", msg.Priority, "Title:", msg.Title)
 	}
-	_, err = client.Message.CreateMessage(params, auth.TokenAuth(applicationToken))
 
-	if err != nil {
-		log.Fatalf("Could not send message %v", err)
-		return
-	}
-	log.Println("Message Sent!")
+        log.Info("print message ",resp)
 
-        // lire les messages recue
+    //faire getmessage.  func (*Client) GetMessages  
+    // func (a *Client) GetMessages(params *GetMessagesParams, authInfo runtime.ClientAuthInfoWriter) (*GetMessagesOK, error)
+    log.Info("print params Body ",params.Body)
+    //log.Info("print message ",Message.params)
+    //message := client.NewCreateMessageParams()
+    //resp := client.Messages.GetMessages()
+    //message := client.NewCreateMessageParams()  //
+    //versionResponse, err := client.Messages.GetAppMessagesParameters(nil) // essaie de creer les messages parameter avant
+    //	if err != nil {
+    //		log.Fatal("Could not request version ", err)
+    // 		return
+    //	}
 
-    //url := "http://localhost:80/message"
-    //req, _ := http.NewRequest("GET", gotifyURL, nil)
-    ////req.Header.Add("Authorization", "CbcCqwh5RMQEsOR")
-    //req.Header.Add("Authorization", "A9fTnaUlyZVyDO0")
+    //version := versionResponse.Payload
+    //log.Println("Found version", *version)
+    //log.Info("print versionResponse ",versionResponse)
+//fmt.Println(res)
 
-    //res, _ := http.DefaultClient.Do(req)
+////////////////////////////////////////////////
+        // envoie d'un message (testé marche)
+        //  à utiliser dans le cas de réception d'un message Alarme ON ou OFF
+        //params := message.NewCreateMessageParams()
+        //params.Body = &models.MessageExternal{
+        //        Title:    "Alarm",
+        //        Message:  "ON",
+        //        Priority: 5,
+        //}
+        //_, err := client.Message.CreateMessage(params, auth.TokenAuth(applicationToken))
 
-    //defer res.Body.Close()
-    //log.Println("Message Received!: ",res)
-     ///////
-    client := gotifyapi.New(gotifyURL,applicationToken)
-
-    messages, _, err := client.GetMessages(nil)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    for _, msg := range messages {
-        fmt.Println("Message ID:", msg.Id)
-        fmt.Println("Message Title:", msg.Title)
-        fmt.Println("Message Text:", msg.Message)
-        fmt.Println("")
-    }
-    //fmt.Println(res)
+        //if err != nil {
+        //        log.Fatalf("Could not send message %v", err)
+        //        return
+        //}
+        //log.Println("Message Sent!")
 
         // supprimer les messages lues
 }
