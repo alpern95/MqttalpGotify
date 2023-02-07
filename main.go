@@ -15,9 +15,8 @@
 #             : ========
 # v0.0        : 25/01/2023
 # v0.1        : 02/02/2023 test lecture message Gotify en utilisant /gotify/go-api-client
-# v0.2        : test modification topic mqtt à partie du 03/02/2023
-#             : utilisation de https://github.com/alihanyalcin/mqtt-wrapper  mqtt 
-#             : https://github.com/srishina/mqtt.go/blob/main/examples/basic-client/main.go  "github.com/srishina/mqtt.go"
+# v0.2        : 07/02/2023 test publish mqtt topic
+#             : utilisation de /https://github.com/lucacasonato/mqtt" 
 # v0.3        :
 #             : Bugs Issues
 #             : ===========
