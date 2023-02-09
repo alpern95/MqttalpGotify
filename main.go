@@ -61,32 +61,6 @@ func main() {
     log.Info("Début")
     myURL, _ := url.Parse(gotifyURL)
 
-    // ajout pour mqtt
-
-	mqttclient, err := mqtt.NewClient(mqtt.ClientOptions{
-		Servers: []string{"tcp://localhost:1883"},
-	})
-	if err != nil {
-		log.Fatalf("failed to create mqtt client: %v\n", err)
-	}
-
-log.Info("MQTT NewMqttCient",mqttclient)
-log.Info("print typeof mqtt client ",reflect.TypeOf(mqttclient))
-    // connect to mqtt server
-    err = mqttclient.Connect(ctx())
-    if err != nil {
-        log.Fatalf("failed to connect to mqtt server: %v\n", err)
-    }else {log.Info("connect to mqtt server: OK %v\n", err)}
-
-    // publish a message ctx()
-//err := mqttclient.PublishJSON(context.WithTimeout(1 * time.Second), "api/v0/main/porte1", []string("1", "world"), mqtt.AtLeastOnce)
-err = mqttclient.PublishJSON(ctx(), "/alarme_armée/","1", mqtt.AtLeastOnce)
-if err != nil {
-    panic(err)
-}else {log.Info("Publish mqtt message: OK %v\n", err)}
-
-
-
 
     // lire les messages recue
     client := gotify.NewClient(myURL, &http.Client{}) // ok 
@@ -125,11 +99,10 @@ for _, Messages := range mess {
 
         // supprimer les messages lues
 
-        // Publier dans mqtt
-	// Create new client.
+    pubalarmearmee()
 
 
-        //envoie notification
+    //envoie notification
 
 }
 
@@ -138,3 +111,27 @@ func ctx() context.Context {
 	cntx, _ := context.WithTimeout(context.Background(), 1*time.Second)
 	return cntx
 }
+
+// fonction publish arme armée ajouté varible 1 ou 0
+    func pubalarmearmee() {
+        // Publier 1 dans topic alarme_armee  si le mesage est alarme on
+        // Publier 0 dans topic alarme_armee  si le mesage est alarme off
+        mqttclient, err := mqtt.NewClient(mqtt.ClientOptions{
+                Servers: []string{"tcp://localhost:1883"},
+        })
+        if err != nil {
+                log.Fatalf("failed to create mqtt client: %v\n", err)
+        }
+
+    log.Info("MQTT NewMqttCient",mqttclient)
+    log.Info("print typeof mqtt client ",reflect.TypeOf(mqttclient))
+        // connect to mqtt server
+        err = mqttclient.Connect(ctx())
+        if err != nil {
+            log.Fatalf("failed to connect to mqtt server: %v\n", err)
+        }else {log.Info("connect to mqtt server: OK %v\n", err)}
+
+    err = mqttclient.PublishJSON(ctx(), "alarme_armee/",1, mqtt.AtLeastOnce)
+    if err != nil {
+        panic(err)
+    }else {log.Info("Publish mqtt message: OK %v\n", err)}}
