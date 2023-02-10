@@ -15,7 +15,7 @@
 #             : ========
 # v0.0        : 25/01/2023
 # v0.1        : 02/02/2023 test lecture message Gotify en utilisant /gotify/go-api-client
-# v0.2        : 07/02/2023 test publish mqtt topic
+# v0.2        : 07/02/2023 test publish mqtt topic alarme_armee
 #             : utilisation de /https://github.com/lucacasonato/mqtt" 
 # v0.3        :
 #             : Bugs Issues
@@ -64,13 +64,9 @@ func main() {
 
     // lire les messages recue
     client := gotify.NewClient(myURL, &http.Client{}) // ok 
-    log.Info("print client ",client)
-    log.Info("print typeof client ",reflect.TypeOf(client))
 
     params := message.NewGetAppMessagesParams() //Ajout App
     params.ID = 1
-    log.Info("print params NewGetAppMessagesParams ",params)
-    log.Info("print typeof params ",reflect.TypeOf(params))
 
     messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK mais 401 GetApps
     if err != nil {
@@ -81,6 +77,8 @@ func main() {
     log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
     log.Info("messages payload ",messagesResponse.Payload)
 
+    // Faire une fonction  avec les messages gotify en retour.
+
     // extraire les messages
     messages := messagesResponse.Payload
     log.Info("Les messages ",messages)
@@ -89,17 +87,35 @@ func main() {
     // calcul Taille
     log.Info("print Calcul du message Paging Size ",len(messages.Messages))
 
-mess := messages.Messages
-for _, Messages := range mess {
-    // traitez chaque message ici
-    log.Info("Message ApplicationID:  ",Messages.ApplicationID)
-    log.Info("Titre du message: ",Messages.Title)
-    log.Info("Message: ",Messages.Message)
-}
+    mess := messages.Messages
+    for _, Messages := range mess {
+        // traitez chaque message ici
+        log.Info("Message ApplicationID:  ",Messages.ApplicationID)
+        //log.Info("Message: ",Messages.Message)
+        // traitez chaque message ici Si message alarme on alors pubalarmearmee()
+        if Messages.Title=="alarme"{
+            //traitement des messages alarme 
+            log.Info("Titre du message: ",Messages.Title)
+            switch Messages.Message{
+            case "off":
+                log.Info("Message case off: ",Messages.Message)
+            case "Off":
+                log.Info("Message case off: ",Messages.Message)
+            case "on":
+                pubalarmearmee()
+                log.Info("Message case on: ",Messages.Message)
+            case "On":
+                pubalarmearmee()
+                log.Info("Message case on: ",Messages.Message)
+            default:
+                log.Info("Message case default: ",Messages.Message)
+            }
+        }
+    }
 
         // supprimer les messages lues
 
-    pubalarmearmee()
+    //pubalarmearmee()
 
 
     //envoie notification
