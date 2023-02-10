@@ -68,14 +68,13 @@ func main() {
     params := message.NewGetAppMessagesParams() //Ajout App
     params.ID = 1
 
-    messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK mais 401 GetApps
+    messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK
     if err != nil {
         log.Fatalf("Could not get messages %v", err)
         return
     }
     log.Info("print version en real message ",messagesResponse)
     log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
-    log.Info("messages payload ",messagesResponse.Payload)
 
     // Faire une fonction  avec les messages gotify en retour.
 
@@ -103,7 +102,7 @@ func main() {
                 log.Info("Message case off: ",Messages.Message)
             case "on":
                 pubalarmearmee()
-                log.Info("Message case on: ",Messages.Message)
+                 log.Info("Message case on: ",Messages.Message)
             case "On":
                 pubalarmearmee()
                 log.Info("Message case on: ",Messages.Message)
@@ -111,10 +110,19 @@ func main() {
                 log.Info("Message case default: ",Messages.Message)
             }
         }
+        log.Info("Message à supprimer Apllication ID : ",Messages.ApplicationID)
+        log.Info("Message à supprimer Message ID: ",Messages.ID)
     }
 
-        // supprimer les messages lues
-
+    // supprimer les messages lues
+    // DeleteAppMessages(params *DeleteAppMessagesParams, authInfo runtime.ClientAuthInfoWriter)
+    messagesResponse, err = client.Message.DeleteAppMessages(params,auth.TokenAuth(applicationToken)) // OK
+    if err != nil {
+        log.Fatalf("Could not get messages %v", err)
+        return
+    }
+    // cannot use params (type *message.GetAppMessagesParams) as type *message.DeleteAppMessagesParams
+    
     //pubalarmearmee()
 
 
