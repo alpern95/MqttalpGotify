@@ -11,17 +11,15 @@ Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir d'une int
 ![LA stack des programmes, ](stack.png)
 
 
-## Programme 1
-
+## Surveille_porte
 ![Premier programme, ](mermaid-diagram-pg1.svg)
 
-Surveille le topic mqtt porte
+On surveille le topic mqtt porte
 Si la porte est ouverte et l'alarme armée, on positionne le topic mqtt alarme à 1.
 
-
-## Programme 2
+## Surveille_Gotify_Messages
 ![Second programme, ](mermaid-diagram-pg2.svg)
 
-On survelle les message reçu par Gotify, si un message "Alarm ON" est reçu, on positionne le topic mqtt alarm armée à 1
-si un message "Alarm OFF" est reçu, onposition le topic mqtt alarm armée à 0
+On survelle les message reçu par Gotify, si un message "Alarme ON" est reçu, on positionne le topic mqtt alarm armée à 1
+si un message "Alarme OFF" est reçu, onposition le topic mqtt alarm armée à 0
 
