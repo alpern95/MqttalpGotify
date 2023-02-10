@@ -99,7 +99,9 @@ func main() {
             case "off":
                 log.Info("Message case off: ",Messages.Message)
             case "Off":
+                 pubalarmearmee()
                 log.Info("Message case off: ",Messages.Message)
+                pubalarmearmee()
             case "on":
                 pubalarmearmee()
                  log.Info("Message case on: ",Messages.Message)
@@ -115,14 +117,20 @@ func main() {
     }
 
     // supprimer les messages lues
+    //faire new NewDeleteAppMessagesParams() 
+    //params := message.NewGetAppMessagesParams() //Ajout App
+    //params.ID = 1
+
     // DeleteAppMessages(params *DeleteAppMessagesParams, authInfo runtime.ClientAuthInfoWriter)
-    messagesResponse, err = client.Message.DeleteAppMessages(params,auth.TokenAuth(applicationToken)) // OK
+    paramdels := message.NewDeleteAppMessagesParams()
+    paramdels.ID = 1
+    messagesDelResponse, err := client.Message.DeleteAppMessages(paramdels,auth.TokenAuth(applicationToken)) // OK
     if err != nil {
         log.Fatalf("Could not get messages %v", err)
         return
     }
     // cannot use params (type *message.GetAppMessagesParams) as type *message.DeleteAppMessagesParams
-    
+    log.Info("Message Del ",messagesDelResponse)
     //pubalarmearmee()
 
 
