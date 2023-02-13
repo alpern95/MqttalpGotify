@@ -25,7 +25,17 @@ surveille la disponibilité des sondes esp32
   [Lien vers Janitor ](https://github.com/a-bali/janitor)
 
 ## Topics Mqtt
+
+| Nom du Topic  | Propos        | Valeur  | Signification    | 
+| ------------- |:-------------:| -------:| ----------------:|
+| porte         | monitoring    |    1    | 1 up and working |
+| sirene        | monitoring    |    1    | 1 up and working |
+| porte_ouverte | sensor        |  0 ou 1 | 1 porte ouverte  |
+| alarme        | sensor        |  0 ou 1 | 1 alarme activé  |
+| alarme_armee  | sensesor      |  0 ou 1 | 1 alarme armée   |
+
 ![Topic Mqtt, ](mermaid-mqtt.svg)
+
 
 Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les 2 programmes GO
 
