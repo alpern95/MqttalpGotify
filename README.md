@@ -9,7 +9,7 @@ This projetc is not ready to deploiement ![Home-Security-Project]
 
 Ce projet utilise un esp32c3 pour le capteur de porte et un autre pour la Sirène.
 
-Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir que la porte est puverte.
+Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir que la porte est ouverte.
 
 La sirène utilise le le topic (mqtt) alarme, si alarme alors la sirène s'active.
 
