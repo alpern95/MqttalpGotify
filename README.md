@@ -13,6 +13,17 @@ Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir que la po
 
 La sirène utilise le le topic (mqtt) alarme, si alarme alors la sirène s'active.
 
+Deux programme Go 
+ - On surveille le topic mqtt porte
+Si la porte est ouverte et l'alarme armée, on positionne le topic mqtt alarme à 1.
+
+ - On surveille les messages reçu par Gotify, si un message "Alarme ON" est reçu, on positionne le topic mq$
+si un message "Alarme OFF" est reçu, onposition le topic mqtt alarm armée à 0
+
+  - Un autre programme montor basé sur Janitor 
+surveille la disponibilité des sondes esp32
+  ![Lien vers Janitor, ](https://github.com/a-bali/janitor)
+
 ## Topics Mqtt
 ![Topic Mqtt, ](mermaid-mqtt.svg)
 
@@ -27,12 +38,7 @@ Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les
 ## Surveille_porte
 ![Surveille_porte, ](mermaid-diagram-pg1.svg)
 
-On surveille le topic mqtt porte
-Si la porte est ouverte et l'alarme armée, on positionne le topic mqtt alarme à 1.
-
 ## Surveille_Gotify_Messages
 ![Second programme, ](mermaid-diagram-pg2.svg)
 
-On survelle les message reçu par Gotify, si un message "Alarme ON" est reçu, on positionne le topic mqtt alarm armée à 1
-si un message "Alarme OFF" est reçu, onposition le topic mqtt alarm armée à 0
 
