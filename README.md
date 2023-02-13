@@ -21,6 +21,9 @@ Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les
 ## Sonde esp32c3 porte
 ![ESP32C3_Porte, ](sonde_porte.svg)
 
+## Sonde esp32c3 Sirène
+![ESP32C3_Sirene, ](sonde_mqtt_sirene.svg)
+
 ## Surveille_porte
 ![Surveille_porte, ](mermaid-diagram-pg1.svg)
 
