@@ -18,6 +18,9 @@ La sirène utilise le le topic (mqtt) alarme, si alarme alors la sirène s'activ
 
 Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les 2 programmes GO
 
+## Sonde esp32c3 porte
+![ESP32C3_Porte, ](sonde_porte.svg)
+
 ## Surveille_porte
 ![Surveille_porte, ](mermaid-diagram-pg1.svg)
 
