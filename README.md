@@ -54,6 +54,6 @@ Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les
 
 ## Test Surveille_Gotify_Messages
 
-Sur un l'envoie de message alarme Of ou alarme Off via l'appli sur mon téléphone.
+Sur un l'envoie de message alarme On ou alarme Off via l'appli sur mon téléphone.
 Le programme lit bien les messages et les suprime ensuite et selon le message, 
 il positionne bien le topic alarme_armee à 0 ou 1
