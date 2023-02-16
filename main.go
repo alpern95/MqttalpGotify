@@ -34,6 +34,9 @@ import (
         log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
+        "encoding/json"
+	//"io/ioutil"
+        "os"
 
 	//"github.com/gotify/go-api-client/v2/auth"
 	"github.com/gotify/go-api-client/v2/client/message"
@@ -48,11 +51,30 @@ import (
         "context"
 )
 
+type Config struct {
+    Loglevel string `json:"level"`
+}
+
 type GetAppMessagesOK struct {
 	Payload *models.PagedMessages
 }
 
+var config Config
+
+var mois string
+var jour string
+var annee string
+var maint time.Time
+var heure string
+var minute string
+var seconde string
+
+var filename string
+var loglevel string
+
 var messagesResponse GetAppMessagesOK
+
+
 
 const (
 	gotifyURL        = "http://localhost:80"
@@ -60,9 +82,17 @@ const (
 )
 
 func main() {
-    log.Info("Début")
-    // lire les messages recue dans aap 1
-    for true { // boucle infinie
+    start := time.Now()
+    config, _ := LoadConfiguration("config.json")
+    InitTime()
+    filename = "Surveille_Gotify_Messages-"+jour +mois +annee+".log"
+    loglevel = config.Loglevel
+    InitLogs()
+    log.Info("Loglevel : ",loglevel)
+    log.Debug("========================= Début à : ",start)
+
+    // Boucle infinie
+    for true { 
     err := readappmess()
     if err != nil {
         log.Fatal ("FATAL appel readappmess",err)
@@ -75,6 +105,8 @@ func main() {
     }
     time.Sleep(2 * time.Second)
     //envoie notification
+    end := time.Now()
+    log.Debug("========================= Fin à : ",end)
     } // fin boucle infinie
 }
 
@@ -89,7 +121,7 @@ func delappmess()(error){
         log.Fatalf("Could not get messages %v", err)
         return err
     }
-    log.Info("func delappmess: All Messages Deleted ",messagesDelResponse)
+    log.Debug("func delappmess: All Messages Deleted ",messagesDelResponse)
     return err
 }
 
@@ -109,19 +141,19 @@ func ctx() context.Context {
                 log.Fatalf("failed to create mqtt client: %v\n", err)
         }
 
-    log.Info("MQTT NewMqttCient",mqttclient)
-    log.Info("print typeof mqtt client ",reflect.TypeOf(mqttclient))
+    log.Debug("func pubalarmearmee: NewMqttCient",mqttclient)
+    log.Debug("print typeof mqtt client ",reflect.TypeOf(mqttclient))
         // connect to mqtt server
         err = mqttclient.Connect(ctx())
         if err != nil {
             log.Fatalf("failed to connect to mqtt server: %v\n", err)
-        }else {log.Info("connect to mqtt server: OK %v\n", err)}
+        }else {log.Debug("connect to mqtt server: OK %v\n", err)}
 
     // ajout valeur variable 0 ou 1
     err = mqttclient.PublishJSON(ctx(), "alarme_armee/",valeur, mqtt.AtLeastOnce)
     if err != nil {
         panic(err)
-    }else {log.Info("Publish mqtt message: OK %v\n", err)}
+    }else {log.Debug("func pubalarmearmee: Publish Value  %v\n", err)}
     return err
 }
 
@@ -136,14 +168,12 @@ func readappmess()(error){
         log.Fatalf("Could not get messages %v", err)
         return err
     }
-    log.Info("print version en real message ",messagesResponse)
-    log.Info("print typeof version en real message ",reflect.TypeOf(messagesResponse))
     // extraire les messages
     messages := messagesResponse.Payload
-    log.Info("Les messages ",messages)
-    log.Info("Les messages all ",messages.Messages)
+    log.Debug("func readappmess: Les messages ",messages)
+    log.Debug("func readappmess: Les messages all ",messages.Messages)
     // calcul Taille
-    log.Info("print Calcul du message Paging Size ",len(messages.Messages))
+    log.Debug("func readappmess: Calcul du message Paging Size ",len(messages.Messages))
     mess := messages.Messages
     for _, Messages := range mess {      // Boucle for pour chaque messages dans l'appli ID 1
         // traitez chaque message ici
@@ -152,28 +182,86 @@ func readappmess()(error){
         // traitez chaque message ici Si message alarme on alors pubalarmearmee()
         if Messages.Title=="alarme"{
             //traitement des messages alarme
-            log.Info("Titre du message: ",Messages.Title)
+            log.Debug("func readappmess: Titre du message: ",Messages.Title)
             switch Messages.Message{
             case "off":
-                log.Info("Message case off: ",Messages.Message)
+                log.Debug("func readappmess: Message case off: ",Messages.Message)
             case "Off":
                 err = pubalarmearmee(0)
                 if err != nil {
                   panic(err)
-                }else {log.Info("Publish mqtt message Case Off: OK %v\n", err)} 
-                log.Info("Message case Off: ",Messages.Message)
+                }else {log.Debug("func readappmess: Publish mqtt message Case Off: OK %v\n", err)} 
+                log.Debug("func readappmess: Publish mqtt message Case Off: ",Messages.Message)
             case "on":
                 pubalarmearmee(1)
-                log.Info("Message case on: ",Messages.Message)
+                log.Debug("func readappmess: Publish mqtt Message case on: ",Messages.Message)
             case "On":
                 pubalarmearmee(1)
-                log.Info("Message case on: ",Messages.Message)
+                log.Debug("func readappmess: Publish mqtt Message case on: ",Messages.Message)
             default:
-                log.Info("Message case default: ",Messages.Message)
+                log.Info("func readappmess: Publish mqtt Message case default: ",Messages.Message)
             }
         }
-        log.Info("Message à supprimer Apllication ID : ",Messages.ApplicationID)
-        log.Info("Message à supprimer Message ID: ",Messages.ID)
+        log.Debug("func readappmess: Message à supprimer Apllication ID : ",Messages.ApplicationID)
+        log.Debug("func readappmess: Message à supprimer Message ID: ",Messages.ID)
     }
 	return err
+}
+
+
+func LoadConfiguration(filename string) (Config,error) {
+    var config Config
+    log.Debug("Le nom du fichier de configuration : ",filename)
+    configFile, err := os.Open(filename)
+    defer configFile.Close()
+    if err != nil {
+        log.Debug("Vérifier la presence d'un fichier de config",config,err)
+    }
+    jsonParser := json.NewDecoder(configFile)
+    err = jsonParser.Decode(&config)
+    if err != nil {
+        log.Debug("Json Paser failed to read le fichier de configuration ",config,err)
+    }
+    return config, err
+}
+
+func InitTime() {
+    maint = time.Now()
+    annee = maint.Format("06")
+    mois = maint.Format("01")
+    jour = maint.Format("02")
+    heure = maint.Format("15")
+    minute = maint.Format("04")
+    seconde = maint.Format("05")
+}
+
+func InitLogs() {
+    //Initialisation des Logs
+    Formatter := new(log.TextFormatter)
+    Formatter.TimestampFormat = "02-01-2006 15:04:05"
+    Formatter.FullTimestamp = true
+    log.SetFormatter(Formatter)
+    log.SetLevel(log.DebugLevel)  // reste en debug si il n'est pas change par la configuration
+
+    // Lecture du fichier de log
+    f, err := os.OpenFile(filename, os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0644)
+    if err != nil {
+        // Cannot open log file. Logging to stderr
+        log.Fatal("Error Oppening Log File:", err)
+    }else{
+        log.SetOutput(f)
+        log.Info("ouverture du fichier de log OK")
+    }
+    //defer f.Close()
+    // Set Loglevel
+    switch loglevel {
+        case "debug":
+                log.SetLevel(log.DebugLevel)
+        case "info":
+                 log.SetLevel(log.InfoLevel)
+        case "warn":
+                log.SetLevel(log.WarnLevel)
+        case "error":
+                log.SetLevel(log.ErrorLevel)
+        }
 }
