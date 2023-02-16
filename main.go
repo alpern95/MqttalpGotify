@@ -62,18 +62,20 @@ const (
 func main() {
     log.Info("Début")
     // lire les messages recue dans aap 1
+    for true { // boucle infinie
     err := readappmess()
     if err != nil {
         log.Fatal ("FATAL appel readappmess",err)
-    }else { log.Debug("Main: retour fonc readappmess: Suppression des messages lu  oK")}
+    }
 
     // supprimer les messages lues (faire une fonction)
     err = delappmess()
     if err != nil { 
         log.Fatal ("FATAL appel delappmess",err) 
-    }else { log.Debug("Main : retour fonc delappmess: Suppression des messages lu  oK")}
-
+    }
+    time.Sleep(2 * time.Second)
     //envoie notification
+    } // fin boucle infinie
 }
 
 // ajout pour mqtt
