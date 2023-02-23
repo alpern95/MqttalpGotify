@@ -6,6 +6,7 @@ VERSION = "1.0.0"
         surveille le topic alarme_armee
         surveille le topic alarme
 		Si les deux topics sont à 1 alors enclancher la sirenne
+		publier dans le topic sirene toute les 10s (pour la supervision)
 ]]
 
 local sys = require "sys"
@@ -21,8 +22,8 @@ if wdt then
 end
 	
 local device_id     = "porte-entree"    --Passez à votre propre appareil id
---local device_id     = "votre_id"    --Passez à votre propre appareil id
-local device_secret = "votre_cle"    --Changer pour votre propre clé d'appareil
+--local device_id     = "apernelle"    --Passez à votre propre appareil id
+local device_secret = "2307gZiYZR"    --Changer pour votre propre clé d'appareil
 
 local mqttc = nil
 
@@ -60,8 +61,8 @@ sys.subscribe("NTP_SYNC_DONE", function()
 sys.taskInit(function()
     log.info("wlan", "Lancement initialisation Wifi :", wlan.init())
     wlan.setMode(wlan.STATION)
-    --wlan.connect("votre_wifi", "votre_id_wifi", 1)
-	wlan.connect("votre_wifi", "votre_id_wifi", 1)
+    --wlan.connect("Freebox-A3C67E", "incitabat66-audissem-supplendis?2", 1)
+	wlan.connect("ZTE_A06C1C", "50196132", 1)
     local result, data = sys.waitUntil("IP_READY")
     log.info("wlan", "IP_READY", result, data)
     
@@ -72,10 +73,10 @@ sys.taskInit(function()
 	--mqttc = mqtt.create(nil,"192.168.1.5", 1883)
     mqttc:auth(client_id,user_name,password)
     mqttc:keepalive(30) --  keepaliv 240s
-    mqttc:autoreconn(true, 3000) -- autoreconnexion tous les 3000
+    mqttc:autoreconn(true, 10000) -- autoreconnexion tous les 3000 3s passé à 10s
 
     mqttc:on(function(mqtt_client, event, data, payload)
-        -- 用户自定义代码
+        -- subscrive topic alarle et alarme_armee. Test les retours et inscrire les resulat dans la table. 
         log.info("mqtt", "event", event, mqtt_client, data, payload)
         if event == "conack" then
             sys.publish("mqtt_conack")
@@ -107,7 +108,7 @@ sys.taskInit(function()
 	sys.waitUntil("mqtt_conack")
     while true do
         -- mqttc自动处理重连
-        local ret, topic, data, qos = sys.waitUntil("mqtt_pub", 30000)
+        local ret, topic, data, qos = sys.waitUntil("mqtt_pub", 30000) -- 30 secondes
         if ret then
             if topic == "close" then break end
             mqttc:publish(topic, data, qos)
@@ -123,11 +124,12 @@ sys.taskInit(function()
 --	local payload = "1"
 --	local qos = 1
     while true do
-        sys.wait(5000)
+        sys.wait(10000)
+        -- 10000 10s 		
         --if mqttc:ready() then
         --    local pkgid = mqttc:publish(topic, payload, qos)
 		--	end
-		log.info("Tache pour controler la table etposition le GPIO ou la led")
+		log.info("Tache pour controler la table et positionner le GPIO ou la led")
 		if table[2] == "1" and table[4]== "1" then
      		LEDB(1)
 		else
@@ -137,7 +139,19 @@ sys.taskInit(function()
     end
 end) 
 
---  ---------------------------------------------
+-- Nouvelle tache pour la supervision
+sys.taskInit(function()
+	local topic = "/sirene"
+	local data = "1"
+	local qos = 1
+    while true do
+        sys.wait(10000)
+        if mqttc and mqttc:ready() then
+			-- Publication dans sirene pour le monitoring
+            local pkgid = mqttc:publish(topic, data, qos)
+			log.info("Tache  pub monitoring topic sirene :")
+        end
+    end
+end)
 -- 
 sys.run()
--- sys.run()
