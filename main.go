@@ -20,6 +20,8 @@
 #             : 
 # v0.3        : 16/02/2023 Ajouter des fonctions pour la lisibilité
 #             : 16/03/2023 creat fonction readappmess & delappmess
+# v0.4        : 01/03/2023
+#             : 01/03/2023 Nommage du programme main.go vers Surveille_Gotify_Messages.go
 #             : Bugs Issues
 #             : ===========
 #             :
