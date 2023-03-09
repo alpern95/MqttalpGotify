@@ -66,9 +66,10 @@ il positionne bien le topic alarme_armee à 0 ou 1
 # Test
 **Supported brokers**:
 
-|  Broker    |  Demo account | Paperwallet trading |  Real trading   | Backtesting (historical prices) |
+|  Programme    |  Developpement | Testing |  Production    |
 | ---- | ---- | ---- | ---- | ---- |
-| IG.com   |  ✅    |   ❌   | ✅ | ✅
-|  Coinbase    |   ❌   |  ✅    | ❌ | ✅
-|  FTX    |   ❌   |  ✅    | ❌ | ❌
+| Surveille_porte.go             |   ❌   |  ❌ |  ❌  |
+| Surveille_Gotify_Messages.go   |   ❌   |  ❌ | ❌ |
+| Sonde_esp32c3_porte.lua        |   ❌   |  ✅ | ❌ |
+| Sonde_esp32c3_Sirène.lua       |   ❌   |  ✅ | ❌ |
 
