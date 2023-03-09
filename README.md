@@ -62,3 +62,13 @@ il positionne bien le topic alarme_armee à 0 ou 1
 <p align="center">
     <a href="https://www.buymeacoffee.com/alpern95" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-green.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 </p>
+
+# Test
+**Supported brokers**:
+
+|  Broker    |  Demo account | Paperwallet trading |  Real trading   | Backtesting (historical prices) |
+| ---- | ---- | ---- | ---- | ---- |
+| IG.com   |  ✅    |   ❌   | ✅ | ✅
+|  Coinbase    |   ❌   |  ✅    | ❌ | ✅
+|  FTX    |   ❌   |  ✅    | ❌ | ❌
+
