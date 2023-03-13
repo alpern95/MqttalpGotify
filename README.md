@@ -45,18 +45,19 @@ Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les
 ![ESP32C3_Sirene, ](sonde_mqtt_sirene.svg)
 
 ## Surveille_porte
-![Surveille_porte, ](mermaid-diagram-pg1.svg)
+![Programme Surveille_porte.go, ](mermaid-diagram-pg1.svg)
 On surveille le topic porte_ouverte, si la porte est ouverte et que le topic Alarme_armée=1,
  alors on publie 1 sur le topic alarme.
 
 
 ## Surveille_Gotify_Messages
-![Second programme, ](mermaid-diagram-pg2.svg)
+![Programme Surveille_Gotify_Messages , ](mermaid-diagram-pg2.svg)
 On lit les message recu par gotify, 
   si l'on recoit le message Alarme On, on publie 1 sur alarme_armée.
   si l'on recoit le message Alarme Off, on publie 0 sur alarme_armée.
 
 ## Supervision_Topics.go
+![Programme Supervision_Topics.go, ](mermaid-diagram-pg2.svg)(supervision-topics.png)
   On surveille en souscrivant au topic porte et au topic sirene, que des 1 sont reçus régulièrement.
   Action si l'on ne reçoit plus : envoie d'une notification via Gotify.
 
