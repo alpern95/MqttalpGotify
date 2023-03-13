@@ -14,15 +14,10 @@ Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir que la po
 La sirène utilise le le topic (mqtt) alarme, si alarme alors la sirène s'active.
 
 Trois programmes Go 
- - On surveille le topic mqtt porte
-Si la porte est ouverte et l'alarme armée, on positionne le topic mqtt alarme à 1.
+ - Surveille_porte.go
+ - Surveille_Gotify_Messages.go
+ - Supervision_topics.go
 
- - On surveille les messages reçu par Gotify, si un message "Alarme ON" est reçu, on positionne le topic mq$
-si un message "Alarme OFF" est reçu, onposition le topic mqtt alarm armée à 0
-
-  - Un autre programme monitor basé sur Janitor 
-surveille la disponibilité des sondes esp32
-  [Lien vers Janitor ](https://github.com/a-bali/janitor)
 
 ## Architecture 
 ![L'organisation, ](new_archi.png)
@@ -51,16 +46,19 @@ Les topics sont accédés par les 2 sondes esp32, (porte et sirène), et par les
 
 ## Surveille_porte
 ![Surveille_porte, ](mermaid-diagram-pg1.svg)
+On surveille le topic porte_ouverte, si la porte est ouverte et que le topic Alarme_armée=1,
+ alors on publie 1 sur le topic alarme.
+
 
 ## Surveille_Gotify_Messages
 ![Second programme, ](mermaid-diagram-pg2.svg)
+On lit les message recu par gotify, 
+  si l'on recoit le message Alarme On, on publie 1 sur alarme_armée.
+  si l'on recoit le message Alarme Off, on publie 0 sur alarme_armée.
 
-
-## Test Surveille_Gotify_Messages
-
-Sur un l'envoie de message alarme On ou alarme Off via l'appli sur mon téléphone.
-Le programme lit bien les messages et les suprime ensuite et selon le message, 
-il positionne bien le topic alarme_armee à 0 ou 1
+## Supervision_Topics.go
+  Surveille en sousscrivant aux tipcs porte, et sirene que des 1 sont reçus régulièrement.
+  Action si l'on ne reçoit plus : envoie d'une notification via Gotify.
 
 # Support
 <p align="center">
