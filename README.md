@@ -13,6 +13,8 @@ Le capteur de porte utilise le topic (mqtt) Porte_ouverte pour avertir que la po
 
 La sirène utilise le le topic (mqtt) alarme, si alarme alors la sirène s'active.
 
+Ce projet se veut independant, autonome, peut tourner sans internet.
+
 Trois programmes Go 
  - Surveille_porte.go
  - Surveille_Gotify_Messages.go
