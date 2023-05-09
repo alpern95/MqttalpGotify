@@ -59,7 +59,7 @@ On lit les message recu par gotify,
   si l'on recoit le message Alarme Off, on publie 0 sur alarme_armée.
 
 ## Supervision_Topics.go
-![Programme Supervision_Topics.go, ](mermaid-diagram-pg2.svg)(supervision-topics.png)
+![Programme Supervision_Topics.go, ](mermaid-diagram-monitor.svg)
   On surveille en souscrivant au topic porte et au topic sirene, que des 1 sont reçus régulièrement.
   Action si l'on ne reçoit plus : envoie d'une notification via Gotify.
 
