@@ -76,11 +76,9 @@ var loglevel string
 
 var messagesResponse GetAppMessagesOK
 
-
-
 const (
 	gotifyURL        = "http://localhost:80"
-	applicationToken = "CbcCqwh5RMQEsOR"  //applitoken A9fTnaUlyZVyDO0  clenttoken  CbcCqwh5RMQEsOR
+	applicationToken = "APAyQKMZL7P32ko"  //applitoken A9fTnaUlyZVyDO0  clenttoken  CbcCqwh5RMQEsOR
 )
 
 func main() {
@@ -95,21 +93,21 @@ func main() {
 
     // Boucle infinie
     for true { 
-    err := readappmess()
-    if err != nil {
-        log.Fatal ("FATAL appel readappmess",err)
-    }
+       err := readappmess()
+    if    err != nil {
+           log.Fatal ("FATAL appel readappmess",err)
+       }
 
-    // supprimer les messages lues (faire une fonction)
-    err = delappmess()
-    if err != nil { 
-        log.Fatal ("FATAL appel delappmess",err) 
-    }
-    time.Sleep(2 * time.Second)
-    //envoie notification
-    end := time.Now()
-    log.Debug("========================= Fin à : ",end)
-    } // fin boucle infinie
+       // supprimer les messages lues (faire une fonction)
+       err = delappmess()
+       if err != nil { 
+           log.Fatal ("FATAL appel delappmess",err) 
+       }
+       time.Sleep(2 * time.Second)
+       //envoie notification
+       end := time.Now()
+       log.Debug("========================= Fin à : ",end)
+     } // fin boucle infinie
 }
 
 // ajout pour mqtt
@@ -117,7 +115,7 @@ func delappmess()(error){
     myURL, _ := url.Parse(gotifyURL)
     client := gotify.NewClient(myURL, &http.Client{})
     paramdels := message.NewDeleteAppMessagesParams()
-    paramdels.ID = 1
+    paramdels.ID = 0
     messagesDelResponse, err := client.Message.DeleteAppMessages(paramdels,auth.TokenAuth(applicationToken)) // OK
     if err != nil {
         log.Fatalf("Could not get messages %v", err)
@@ -164,10 +162,10 @@ func readappmess()(error){
     // lire les messages recue
     client := gotify.NewClient(myURL, &http.Client{}) // ok
     params := message.NewGetAppMessagesParams() //Ajout App
-    params.ID = 1                               // Id de l'application
+    params.ID = 0                               // Id de l'application
     messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK
     if err != nil {
-        log.Fatalf("Could not get messages %v", err)
+        log.Fatalf("Fonction readappmess: Could not get messages %v", err)
         return err
     }
     // extraire les messages
@@ -177,7 +175,7 @@ func readappmess()(error){
     // calcul Taille
     log.Debug("func readappmess: Calcul du message Paging Size ",len(messages.Messages))
     mess := messages.Messages
-    for _, Messages := range mess {      // Boucle for pour chaque messages dans l'appli ID 1
+    for _, Messages := range mess {      // Boucle for pour chaque messages dans l'appli ID 
         // traitez chaque message ici
         log.Info("Message ApplicationID:  ",Messages.ApplicationID)
         //log.Info("Message: ",Messages.Message)
@@ -209,7 +207,6 @@ func readappmess()(error){
     }
 	return err
 }
-
 
 func LoadConfiguration(filename string) (Config,error) {
     var config Config
