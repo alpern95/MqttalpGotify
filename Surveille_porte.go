@@ -37,8 +37,8 @@ import (
         //"fmt"
         //"log"
         log "github.com/sirupsen/logrus"
-        "net/http"
-        "net/url"
+        //"net/http"
+        //"net/url"
         "encoding/json"
         //"io/ioutil"
         "os"
@@ -68,7 +68,7 @@ var pathetc string
 var filename string
 var loglevel string
 
-var messagesResponse GetAppMessagesOK
+//var messagesResponse GetAppMessagesOK
 
 const (
         gotifyURL        = "http://localhost:80"
@@ -91,28 +91,38 @@ func main() {
     // Boucle infinie
     for true {
 
-      // Ajout readApp Lire les appli disponibles
-      err := getapp()
-      if    err != nil {
-           log.Fatal ("FATAL appel readappmess",err)
-       }
-
-       // Lire les messages dans l'appli
-       err = readappmess()
+      //souscrire au topic porte_ouverte
+       err := subtopicporte()
        if    err != nil {
-          log.Fatal ("FATAL appel readappmess",err)
+          log.Fatal ("FATAL appel fonction subtopicporte",err)
        }
 
-       // supprimer les messages lues (faire une fonction)
-       err = delappmess()
-       if err != nil {
-          log.Fatal ("FATAL appel delappmess",err)
-       }
-       time.Sleep(2 * time.Second)
        //envoie notification
        end := time.Now()
        log.Debug("========================= Fin à : ",end)
-     } // fin boucle infinie
+    } // fin boucle infinie
+}
+
+// Fonction subscribe topic
+    func subtopicporte()(error) {
+        // création du client (New)
+        mqttclient, err := mqtt.NewClient(mqtt.ClientOptions{
+                Servers: []string{"tcp://localhost:1883"},
+        })
+        if err != nil {
+                log.Fatalf("func : subtopicporte : failed to create mqtt client: %v\n", err)
+        }
+        // connexion au serveur mqtt
+        err = mqttclient.Connect(ctx())
+        if err != nil {
+            log.Fatalf("func : subtopicporte : failed to connect to mqtt server: %v\n", err)
+        }else {log.Debug("func : subtopicporte : connect to mqtt server: OK %v\n", err)}
+
+	err = mqttclient.Subscribe(ctx(), "alarme_armee/#", mqtt.AtMostOnce)
+	if err != nil {
+		log.Fatalf("func : subtopicporte : failed to subscribe to config service: %v\n", err)
+	}
+        return err
 }
 
 // fonction publish alarme variable 1 ou 0
@@ -136,6 +146,11 @@ func main() {
             panic(err)
         }else {log.Debug("func pubalarme: Publish Value  %v\n", err)}
         return err
+}
+
+func ctx() context.Context {
+   cntx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+   return cntx
 }
 
 func LoadConfiguration(filename string) (Config,error) {
