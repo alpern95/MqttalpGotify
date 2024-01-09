@@ -73,8 +73,8 @@ On lit les message recu par gotify,
 
 |  Programme    |  Developpement | Testing |  Production    |
 | ---- | ---- | ---- | ---- |
-| Surveille_porte.go             |   ❌   |  ❌ |  ͛ |
-| Surveille_Gotify_Messages.go   |    en cours  |  ❌ |   s͛ |
+| Surveille_porte.go             |   ✅   |  ❌ |  ͛ |
+| Surveille_Gotify_Messages.go   |   ✅  |  ❌ |   s͛ |
 | Supervision_topics.go          |    en cours  |  ❌ |     |
 | Sonde_esp32c3_porte.lua        |    •         |  ✅ |   ͛ |
 | Sonde_esp32c3_Sirène.lua       |    •         |  ✅ |  ͛ |
