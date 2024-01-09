@@ -45,6 +45,7 @@ import (
 	"github.com/gotify/go-api-client/v2/gotify"
 	"github.com/gotify/go-api-client/v2/models"
         "github.com/gotify/go-api-client/v2/auth"
+        "github.com/gotify/go-api-client/v2/client/application" // ajout le 5/01/2024
 
         // puplish mqtt
         //https://github.com/lucacasonato/mqtt"
@@ -78,7 +79,8 @@ var messagesResponse GetAppMessagesOK
 
 const (
 	gotifyURL        = "http://localhost:80"
-	applicationToken = "APAyQKMZL7P32ko"  //applitoken A9fTnaUlyZVyDO0  clenttoken  CbcCqwh5RMQEsOR
+	applicationToken = "AcENJxTa-T-5c68"  //APP 0 AcENJxTa-T-5c68
+        clientsToken = "CtIjH3i4GmiCwAP"      //Client  Linaro CtIjH3i4GmiCwAP Chrome CPIqN6zqPjPWEpI
 )
 
 func main() {
@@ -93,15 +95,23 @@ func main() {
 
     // Boucle infinie
     for true { 
-       err := readappmess()
-    if    err != nil {
+
+      // Ajout readApp Lire les appli disponibles
+      err := getapp()
+      if    err != nil {
            log.Fatal ("FATAL appel readappmess",err)
+       }
+
+       // Lire les messages dans l'appli 
+       err = readappmess()
+       if    err != nil {
+          log.Fatal ("FATAL appel readappmess",err)
        }
 
        // supprimer les messages lues (faire une fonction)
        err = delappmess()
        if err != nil { 
-           log.Fatal ("FATAL appel delappmess",err) 
+          log.Fatal ("FATAL appel delappmess",err) 
        }
        time.Sleep(2 * time.Second)
        //envoie notification
@@ -110,13 +120,26 @@ func main() {
      } // fin boucle infinie
 }
 
-// ajout pour mqtt
+// Ajout d'une fonction pour afficher les applications.
+func getapp()(error){
+    myURL, _ := url.Parse(gotifyURL)
+    client := gotify.NewClient(myURL, &http.Client{}) // ok
+    paramapps := application.NewGetAppsParams()
+    listeapplication, err := client.Application.GetApps(paramapps,auth.TokenAuth(clientsToken)) // OK
+    if err != nil {
+        log.Fatalf("func getapp : Ne peut afficher les applications %v" , err)
+        return err}
+    log.Debug("func getapp : ",listeapplication)
+    return err
+    }
+
+// Suppressions des messages
 func delappmess()(error){
     myURL, _ := url.Parse(gotifyURL)
     client := gotify.NewClient(myURL, &http.Client{})
     paramdels := message.NewDeleteAppMessagesParams()
-    paramdels.ID = 0
-    messagesDelResponse, err := client.Message.DeleteAppMessages(paramdels,auth.TokenAuth(applicationToken)) // OK
+    paramdels.ID = 8
+    messagesDelResponse, err := client.Message.DeleteAppMessages(paramdels,auth.TokenAuth(clientsToken)) // OK
     if err != nil {
         log.Fatalf("Could not get messages %v", err)
         return err
@@ -162,10 +185,11 @@ func readappmess()(error){
     // lire les messages recue
     client := gotify.NewClient(myURL, &http.Client{}) // ok
     params := message.NewGetAppMessagesParams() //Ajout App
-    params.ID = 0                               // Id de l'application
-    messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(applicationToken)) // OK
+    params.ID = 8                               // Id de l'application
+    messagesResponse, err := client.Message.GetAppMessages(params,auth.TokenAuth(clientsToken)) // OK
     if err != nil {
-        log.Fatalf("Fonction readappmess: Could not get messages %v", err)
+        log.Info("func readappmess: Les parametres; ",params.ID)
+        log.Fatalf("func readappmess: Could not get messages %v" , err)
         return err
     }
     // extraire les messages
@@ -177,7 +201,7 @@ func readappmess()(error){
     mess := messages.Messages
     for _, Messages := range mess {      // Boucle for pour chaque messages dans l'appli ID 
         // traitez chaque message ici
-        log.Info("Message ApplicationID:  ",Messages.ApplicationID)
+        log.Info("func readappmess: Message ApplicationID:  ",Messages.ApplicationID)
         //log.Info("Message: ",Messages.Message)
         // traitez chaque message ici Si message alarme on alors pubalarmearmee()
         if Messages.Title=="alarme"{
@@ -210,16 +234,16 @@ func readappmess()(error){
 
 func LoadConfiguration(filename string) (Config,error) {
     var config Config
-    log.Debug("Le nom du fichier de configuration : ",filename)
+    log.Debug("func LoadConfiguration: Le nom du fichier de configuration : ",filename)
     configFile, err := os.Open(filename)
     defer configFile.Close()
     if err != nil {
-        log.Debug("Vérifier la presence d'un fichier de config",config,err)
+        log.Debug("func LoadConfiguration: Vérifier la presence d'un fichier de config",config,err)
     }
     jsonParser := json.NewDecoder(configFile)
     err = jsonParser.Decode(&config)
     if err != nil {
-        log.Debug("Json Paser failed to read le fichier de configuration ",config,err)
+        log.Debug("func LoadConfiguration: Json Paser failed to read le fichier de configuration ",config,err)
     }
     return config, err
 }
