@@ -22,6 +22,8 @@
 #             : 16/03/2023 creat fonction readappmess & delappmess
 # v0.4        : 01/03/2023
 #             : 01/03/2023 Nommage du programme main.go vers Surveille_Gotify_Messages.go
+# v0.5        : 09/01/2024 Fichier de configuration dans /etc/Surveille_Gotify_Messages/
+#             : 09/01/2024 Fichier de log dans /var/log/Surveille_Gotify_Messages/
 #             : Bugs Issues
 #             : ===========
 #             :
@@ -72,6 +74,8 @@ var heure string
 var minute string
 var seconde string
 
+var pathlog string
+var pathetc string
 var filename string
 var loglevel string
 
@@ -85,9 +89,11 @@ const (
 
 func main() {
     start := time.Now()
-    config, _ := LoadConfiguration("config.json")
+    pathlog := "/var/log/Surveille_Gotify_Messages/"
+    pathetc := "/etc/Surveille_Gotify_Messages/"
+    config, _ := LoadConfiguration(pathetc+"config.json")
     InitTime()
-    filename = "Surveille_Gotify_Messages-"+jour +mois +annee+".log"
+    filename = pathlog+"Surveille_Gotify_Messages-"+jour +mois +annee+".log"
     loglevel = config.Loglevel
     InitLogs()
     log.Info("Loglevel : ",loglevel)
